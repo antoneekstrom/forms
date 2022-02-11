@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://forms:forms@db:5432"
+}
+
+model Form {
+  id        Int        @id @default(autoincrement())
+  title     String
+  questions Question[]
+  responses Response[]
+}
+
+model Responder {
+  id        Int        @id @default(autoincrement())
+  name      String
+  responses Response[]
+}
+
+model Response {
+  formId      Int
+  responderId Int
+  responder   Responder @relation(fields: [responderId], references: [id])
+  form        Form      @relation(fields: [formId], references: [id])
+  answers     Answer[]
+
+  @@id([formId, responderId])
+}
+
+model Answer {
+  questionId  Int
+  formId      Int
+  responderId Int
+  value       String
+  question    Question @relation(fields: [questionId], references: [id])
+  response    Response @relation(fields: [formId, responderId], references: [formId, responderId])
+
+  @@id([questionId, formId, responderId])
+}
+
+model Question {
+  id        Int      @id @default(autoincrement())
+  text      String
+  mandatory Boolean
+  forms     Form[]
+  answers   Answer[]
+}
