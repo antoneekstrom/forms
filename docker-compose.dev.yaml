@@ -1,22 +1,104 @@
 version: "3.8"
 
-# Reminder:
-# Ports are in the format: <inner>:<outer> ??
-
 services:
-  db:
-    image: postgres:14.0-alpine
-    environment:
-      POSTGRES_DB: "forms"
-      POSTGRES_USER: "forms"
-      POSTGRES_PASSWORD: "forms"
-    ports:
-      - "5433:5432"
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
+    environment:
+      DB_URI: db:5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+
+      CLIENT_ID: ${CLIENT_ID}
+      CLIENT_SECRET: ${CLIENT_SECRET}
+
+      GRAPHQL_PATH: ${GRAPHQL_PATH}
+      REDIRECT_PATH: ${REDIRECT_PATH}
+
+      GAMMA_URL: http://localhost:${GAMMA_BACKEND_PORT}
     ports:
-      - "80:3000"
+      - ${CLIENT_PORT}:3000
+    networks:
+      default:
     volumes:
       - ./backend/src:/app/src
+
+  db:
+    image: postgres:14.0-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    networks:
+      default:
+
+  gamma-frontend:
+    image: cthit/gamma-frontend:development
+    environment:
+      # Proxies requests to the gamma API from the frontend to another address.
+      HTTP_PROXY: http://gamma-backend:3000
+    ports:
+      # Maps the port 3000 inside the container,
+      # which the frontend is served on, to a public port.
+      - ${GAMMA_FRONTEND_PORT}:3000
+    networks:
+      gamma:
+
+  # Default admin login is "admin:password"
+  gamma-backend:
+    image: cthit/gamma-backend:development
+    environment:
+      PRODUCTION: false
+      IS_MOCKING: true
+
+      DB_USER: gamma
+      DB_PASSWORD: gamma
+      DB_HOST: gamma-db
+      DB_NAME: gamma
+      DB_PORT: 5432
+
+      REDIS_HOST: gamma-redis
+      REDIS_PORT: 6379
+
+      # Default id, secret and redirect URI for the mocked gamma client.
+      # Note: The client won't change if it has already been created.
+      DEFAULT_CLIENT_ID: ${CLIENT_ID}
+      DEFAULT_CLIENT_SECRET: ${CLIENT_SECRET}
+      DEFAULT_REDIRECT_URI: ${CLIENT_REDIRECT}
+
+      # Where you are redirected when successfully logging into gamma.
+      SUCCESSFUL_LOGIN: http://localhost:${GAMMA_FRONTEND_PORT}
+
+      # (?)
+      CORS_ALLOWED_ORIGIN: http://localhost:${GAMMA_FRONTEND_PORT}
+
+      # (?)
+      BACKEND_URI: http://localhost:${GAMMA_BACKEND_PORT}/api/
+
+      # Port inside the container, on which the backend is served.
+      SERVER_PORT: 3000
+    ports:
+      # Maps the server port inside the container to a public port.
+      - ${GAMMA_BACKEND_PORT}:3000
+    networks:
+      gamma:
+
+  gamma-redis:
+    image: redis:5.0
+    networks:
+      gamma:
+
+  gamma-db:
+    image: postgres:10
+    environment:
+      POSTGRES_USER: gamma
+      POSTGRES_DB: gamma
+      POSTGRES_PASSWORD: gamma
+    networks:
+      gamma:
+
+networks:
+  default:
+  gamma:

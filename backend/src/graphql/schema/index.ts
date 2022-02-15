@@ -9,6 +9,7 @@ import {
   Mutation,
   InputType,
   Arg,
+  Authorized,
 } from "type-graphql";
 import { Service } from "typedi";
 import { PrismaService } from "../di";
@@ -203,6 +204,7 @@ export class PluppResolver {
 export class FormResolver {
   constructor(private readonly prisma: PrismaService) {}
 
+  @Authorized()
   @Mutation((returns) => FormType)
   async addForm(@Arg("data") data: AddFormInput) {
     return await this.prisma.client.form.create({

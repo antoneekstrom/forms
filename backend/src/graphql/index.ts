@@ -7,7 +7,7 @@ import {
   QuestionResolver,
   ResponderResolver,
   ResponseResolver,
-} from "./schema/form";
+} from "./schema";
 
 export async function schema() {
   return await buildSchema({
@@ -20,5 +20,8 @@ export async function schema() {
       PluppResolver
     ],
     container: Container,
+    authChecker: (options) => {
+      return false;
+    }
   });
 }
