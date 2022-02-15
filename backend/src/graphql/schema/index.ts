@@ -99,7 +99,7 @@ export class AddQuestionInput implements Partial<QuestionType> {
 @ObjectType()
 export class Plupp {
   @Field()
-  plupp!: string
+  plupp!: string;
 }
 
 @Service()
@@ -195,7 +195,7 @@ export class PluppResolver {
   plupp(): Plupp {
     return {
       plupp: "plupp",
-    }
+    };
   }
 }
 
@@ -204,7 +204,6 @@ export class PluppResolver {
 export class FormResolver {
   constructor(private readonly prisma: PrismaService) {}
 
-  @Authorized()
   @Mutation((returns) => FormType)
   async addForm(@Arg("data") data: AddFormInput) {
     return await this.prisma.client.form.create({
@@ -212,6 +211,7 @@ export class FormResolver {
     });
   }
 
+  @Authorized()
   @Query((returns) => [FormType])
   async forms() {
     return await this.prisma.client.form.findMany();

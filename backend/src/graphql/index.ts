@@ -1,5 +1,6 @@
 import { buildSchema } from "type-graphql";
 import Container from "typedi";
+import { User } from "../auth/gamma.strategy";
 import {
   AnswerResolver,
   FormResolver,
@@ -20,8 +21,9 @@ export async function schema() {
       PluppResolver
     ],
     container: Container,
-    authChecker: (options) => {
-      return false;
+    authChecker: (options, roles) => {
+      const user = options.context.user as User | undefined;
+      return user != undefined;
     }
   });
 }
