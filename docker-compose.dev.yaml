@@ -22,6 +22,7 @@ services:
       - ${CLIENT_PORT}:3000
     networks:
       default:
+      gamma:
     volumes:
       - ./backend/src:/app/src
 
