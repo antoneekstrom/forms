@@ -18,6 +18,8 @@ services:
       REDIRECT_PATH: ${REDIRECT_PATH}
 
       GAMMA_URL: http://localhost:${GAMMA_BACKEND_PORT}
+      GAMMA_LOCAL_URL: http://gamma-backend:3000
+      CLIENT_HOST: http://localhost:3000
     ports:
       - ${CLIENT_PORT}:3000
     networks:

@@ -1,6 +1,6 @@
 import { buildSchema } from "type-graphql";
 import Container from "typedi";
-import { User } from "../auth/gamma.strategy";
+import { User } from "../auth/types";
 import {
   AnswerResolver,
   FormResolver,
@@ -10,6 +10,10 @@ import {
   ResponseResolver,
 } from "./schema";
 
+/**
+ * Creates the graphql schema.
+ * @returns the schema
+ */
 export async function schema() {
   return await buildSchema({
     resolvers: [
@@ -18,12 +22,12 @@ export async function schema() {
       AnswerResolver,
       ResponderResolver,
       QuestionResolver,
-      PluppResolver
+      PluppResolver,
     ],
     container: Container,
     authChecker: (options, roles) => {
       const user = options.context.user as User | undefined;
       return user != undefined;
-    }
+    },
   });
 }

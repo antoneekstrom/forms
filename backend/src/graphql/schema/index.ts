@@ -12,7 +12,7 @@ import {
   Authorized,
 } from "type-graphql";
 import { Service } from "typedi";
-import { PrismaService } from "../di";
+import { PrismaService } from "../../services/prisma";
 
 @ObjectType()
 export class ResponderType implements Responder {
