@@ -1,14 +1,6 @@
-import Strategy, { Authority } from "./strategy";
+import Strategy from "./strategy";
 import passport from "passport";
-
-export interface User {
-  cid: string;
-  phone?: string;
-  is_admin: boolean;
-  groups: string[];
-  language: string;
-  accessToken?: string;
-}
+import { Authority, User } from "./types";
 
 const GAMMA_AUTH_PATH = "/api/oauth/authorize";
 const GAMMA_TOKEN_PATH = "/api/oauth/token";
@@ -29,16 +21,17 @@ const isAdmin = (authorities: Authority[]): boolean => {
 };
 
 export const init = (
-  gammaUrl: string,
   clientID: string,
   clientSecret: string,
-  callbackURL: string
+  callbackURL: string,
+  gammaUrl: string,
+  gammaLocalUrl: string
 ) => {
   const strategy = new Strategy(
     {
       authorizationURL: `${gammaUrl}${GAMMA_AUTH_PATH}`,
-      tokenURL: `http://gamma-backend:3000${GAMMA_TOKEN_PATH}`,
-      profileURL: `http://gamma-backend:3000${GAMMA_PROFILE_PATH}`,
+      tokenURL: `${gammaLocalUrl}${GAMMA_TOKEN_PATH}`,
+      profileURL: `${gammaLocalUrl}${GAMMA_PROFILE_PATH}`,
       clientID,
       clientSecret,
       callbackURL,

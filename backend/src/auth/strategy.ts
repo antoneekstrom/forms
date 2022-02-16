@@ -6,38 +6,12 @@ import axios, { AxiosResponse } from "axios";
 import qs from "qs";
 import express from "express";
 import * as passport from "passport";
-
-interface StrategyOptions {
-  authorizationURL: string;
-  tokenURL?: string;
-  profileURL: string;
-  clientID: string;
-  clientSecret?: string;
-  callbackURL: string;
-}
-
-export interface Authority {
-  id: string;
-  authority: string;
-}
-
-interface GammaUser {
-  cid: string;
-  phone?: string;
-  authorities: Authority[];
-  groups: { superGroup: { name: string; type: string } }[];
-  language: string;
-}
-
-type VerifyFunction = (
-  accessToken: string,
-  user: GammaUser,
-  verify: (err: Error | null, profile: Express.User, info: any) => void
-) => void;
-
-interface TokenResponse {
-  access_token: string;
-}
+import {
+  GammaUser,
+  StrategyOptions,
+  TokenResponse,
+  VerifyFunction,
+} from "./types";
 
 class Strategy extends passport.Strategy {
   options: StrategyOptions;
@@ -82,7 +56,7 @@ class Strategy extends passport.Strategy {
    * @param {object} options
    * @access protected
    */
-  authenticate(req: express.Request, options: passport.AuthenticateOptions) {
+  authenticate(req: express.Request, _: passport.AuthenticateOptions) {
     if (req.query && req.query.error) {
       return this.error(req.query.error_description);
     }
