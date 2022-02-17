@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import express from "express";
-import { schema } from "./graphql";
 import passport from "passport";
 import { configureGammaAuth } from "./auth";
 import { Application } from "express-serve-static-core";
 import { environment } from "./env";
 import { configureGammaAuthRoutes, configureGraphQLRoute } from "./routes";
+import { schema } from "./graphql/schema";
 
 const PORT = 3000;
 
