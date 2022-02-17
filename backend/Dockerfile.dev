@@ -1,17 +1,16 @@
 FROM node:17.5-alpine3.14
 
 ENV NODE_ENV=development
+ENV TSC_WATCHFILE=true
 
 WORKDIR /app
 
-COPY ["package.json", "./"]
+COPY package.json .
+RUN yarn install
 
-RUN ["yarn", "install", "--development"]
+COPY ./prisma ./prisma
+RUN yarn generate
 
-COPY [".", "."]
+COPY tsconfig.json .
 
-RUN ["yarn", "generate"]
-
-RUN ["yarn", "build"]
-
-CMD ["yarn", "dev"]
+CMD yarn dev

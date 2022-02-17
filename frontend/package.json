@@ -2,7 +2,11 @@
   "name": "frontend",
   "version": "1.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "start": "yarn next start",
+    "build": "yarn next build",
+    "dev": "yarn next dev"
+  },
   "devDependencies": {
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",

@@ -9,5 +9,12 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
+  "watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority",
+    "synchronousWatchDirectory": true,
+    "excludeDirectories": ["**/node_modules", "build"]
+  },
   "include": ["./src"]
 }

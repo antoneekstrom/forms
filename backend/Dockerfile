@@ -1,17 +1,17 @@
-FROM node:17.0-alpine3.14
+FROM node:17.5-alpine3.14
 
 ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY ["package.json", "yarn.lock", "./"]
+COPY package.json .
+RUN yarn install
 
-RUN ["yarn", "install", "--production"]
+COPY ./src ./src
+COPY ./prisma ./prisma
+COPY tsconfig.json .
 
-COPY [".", "."]
+RUN yarn generate
+RUN yarn build
 
-RUN ["yarn", "generate"]
-
-RUN ["yarn", "build"]
-
-CMD ["yarn", "start"]
+CMD yarn start
