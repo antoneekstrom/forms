@@ -2,6 +2,11 @@
 Below are instructions for setting up and running the project.
 
 
+### Add .env (development)
+Configure a `.env` file to be used by `docker-compose.dev.yaml`.
+There is a file `defaults.env` which one can rename to `.env` for a default configuration.
+
+
 ### Start containers
 Run the following command from the root of the project:
 
