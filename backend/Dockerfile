@@ -8,10 +8,10 @@ COPY package.json .
 RUN yarn install
 
 COPY ./src ./src
-COPY ./prisma ./prisma
+COPY ./prisma/schema.prisma ./prisma/schema.prisma
 COPY tsconfig.json .
 
 RUN yarn generate
 RUN yarn build
 
-CMD yarn start
+CMD yarn migrate:deploy && yarn start
