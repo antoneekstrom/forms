@@ -4,7 +4,9 @@ ENV NODE_ENV=development
 
 WORKDIR /app
 
-COPY . .
+COPY package.json .
 RUN yarn install
+
+COPY tsconfig.json next.config.js next-env.d.ts ./
 
 CMD yarn dev
