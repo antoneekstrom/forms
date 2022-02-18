@@ -8,9 +8,11 @@
     "dev": "yarn next dev"
   },
   "devDependencies": {
+    "@types/node": "^17.0.18",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "eslint": "^8.7.0",
+    "eslint-config-next": "12.1.0",
     "typescript": "^4.5.5"
   },
   "dependencies": {

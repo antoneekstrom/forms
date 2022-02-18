@@ -1,0 +1,10 @@
+FROM node:17.5-alpine3.14
+
+ENV NODE_ENV=development
+
+WORKDIR /app
+
+COPY . .
+RUN yarn install
+
+CMD yarn dev

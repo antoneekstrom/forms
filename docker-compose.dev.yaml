@@ -1,6 +1,20 @@
 version: "3.8"
 
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      BACKEND_URL: http://localhost:${BACKEND_PORT}
+      GRAPHQL_PATH: ${GRAPHQL_PATH}
+    ports:
+      - ${FRONTEND_PORT}:3000
+    networks:
+      default:
+    volumes:
+      - ./frontend/pages:/app/pages
+
   backend:
     build:
       context: ./backend
@@ -13,15 +27,16 @@ services:
 
       CLIENT_ID: ${CLIENT_ID}
       CLIENT_SECRET: ${CLIENT_SECRET}
+      CLIENT_REDIRECT: ${CLIENT_REDIRECT}
 
       GRAPHQL_PATH: ${GRAPHQL_PATH}
       REDIRECT_PATH: ${REDIRECT_PATH}
 
       GAMMA_URL: http://localhost:${GAMMA_BACKEND_PORT}
       GAMMA_LOCAL_URL: http://gamma-backend:3000
-      CLIENT_HOST: http://localhost:3000
+      CLIENT_HOST: http://localhost
     ports:
-      - ${CLIENT_PORT}:3000
+      - ${BACKEND_PORT}:3000
     networks:
       default:
       gamma:

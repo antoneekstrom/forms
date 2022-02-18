@@ -25,7 +25,7 @@ function LoginButton() {
   return (
     <button
       onClick={() => {
-        window.location.href = "http://localhost/api/auth/login";
+        window.location.href = "http://localhost:3000/api/auth/login";
       }}>
       login
     </button>
@@ -36,7 +36,7 @@ function LogoutButton() {
   return (
     <button
       onClick={() => {
-        window.location.href = "http://localhost/api/auth/logout";
+        window.location.href = "http://localhost:3000/api/auth/logout";
       }}>
       logout
     </button>

@@ -25,6 +25,7 @@ export function environment(): EnvironmentVariables {
   const {
     CLIENT_ID,
     CLIENT_SECRET,
+    CLIENT_REDIRECT,
     REDIRECT_PATH,
     GAMMA_URL,
     GRAPHQL_PATH,
@@ -39,6 +40,6 @@ export function environment(): EnvironmentVariables {
     graphqlPath: GRAPHQL_PATH,
     clientHost: CLIENT_HOST,
     gammaLocalUrl: GAMMA_LOCAL_URL,
-    redirectUrl: `http://localhost${REDIRECT_PATH}`,
+    redirectUrl: CLIENT_REDIRECT,
   };
 }
