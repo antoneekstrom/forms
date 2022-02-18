@@ -28,6 +28,8 @@ Run the following command from the root of the project:
 docker-compose -f docker-compose.dev.yaml up -d --build
 ```
 
+Hot-reload *should* work for the source folders mounted in both the frontend and backend containers. The frontend is by default served on `localhost:80` and the backend on `localhost:3000`.
+
 #### Production
 ```
 docker-compose -f docker-compose.yaml up -d --build
