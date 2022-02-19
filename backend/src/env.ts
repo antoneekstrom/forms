@@ -9,7 +9,7 @@ export type EnvironmentVariables = {
   /**
    * Optional url to use instead of gammaUrl when making requests from the backend.
    */
-  gammaLocalUrl?: string;
+  gammaLocalUrl: string;
   graphqlPath: string;
   redirectUrl: string;
   /**
@@ -39,7 +39,7 @@ export function environment(): EnvironmentVariables {
     gammaUrl: GAMMA_URL,
     graphqlPath: GRAPHQL_PATH,
     clientHost: CLIENT_HOST,
-    gammaLocalUrl: GAMMA_LOCAL_URL,
+    gammaLocalUrl: GAMMA_LOCAL_URL ?? GAMMA_URL,
     redirectUrl: CLIENT_REDIRECT,
   };
 }

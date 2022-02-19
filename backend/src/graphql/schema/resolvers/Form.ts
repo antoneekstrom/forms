@@ -50,6 +50,7 @@ export class FormResolver {
     });
   }
 
+  @Authorized()
   @Query((returns) => [FormType])
   async forms() {
     return await this.prisma.client.form.findMany();
