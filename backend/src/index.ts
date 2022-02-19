@@ -5,7 +5,7 @@ import { environment } from "./env";
 import { schema } from "./graphql/schema";
 import { GraphQLSchema } from "graphql";
 import { graphqlHTTP } from "express-graphql";
-import { configureGammaAuth } from "./auth/gamma/express";
+import { configureGammaAuth } from "@ekstrom/gamma-auth";
 
 const PORT = 3000;
 
