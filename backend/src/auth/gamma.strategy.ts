@@ -6,27 +6,13 @@ const GAMMA_AUTH_PATH = "/api/oauth/authorize";
 const GAMMA_TOKEN_PATH = "/api/oauth/token";
 const GAMMA_PROFILE_PATH = "/api/users/me";
 
-const isAdmin = (authorities: Authority[]): boolean => {
-  if (process.env.MOCK == "true") {
-    return true;
-  }
-
-  for (const i in authorities) {
-    if (authorities[i].authority == process.env.ADMIN_AUTHORITY) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-export const init = (
+export function init(
   clientID: string,
   clientSecret: string,
   callbackURL: string,
   gammaUrl: string,
   gammaLocalUrl: string
-) => {
+) {
   const strategy = new Strategy(
     {
       authorizationURL: `${gammaUrl}${GAMMA_AUTH_PATH}`,
@@ -60,4 +46,18 @@ export const init = (
   passport.serializeUser(function (user: Express.User, cb) {
     cb(null, user);
   });
-};
+}
+
+function isAdmin(authorities: Authority[]): boolean {
+  if (process.env.MOCK == "true") {
+    return true;
+  }
+
+  for (const i in authorities) {
+    if (authorities[i].authority == process.env.ADMIN_AUTHORITY) {
+      return true;
+    }
+  }
+
+  return false;
+}

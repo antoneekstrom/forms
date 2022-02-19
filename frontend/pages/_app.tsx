@@ -1,15 +1,17 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import type { AppProps } from "next/app";
+import { createClient, Provider as UrqlClientProvider } from "urql";
 
-const client = new ApolloClient({
-  uri: "http://localhost:3000/api/graphql",
-  credentials: 'include',
-  cache: new InMemoryCache(),
+const client = createClient({
+  url: "http://localhost:3000/api/graphql",
+  fetchOptions: {
+    credentials: "include"
+  }
 });
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={client}>
+    <UrqlClientProvider value={client}>
       <Component {...pageProps} />
-    </ApolloProvider>
-  )
+    </UrqlClientProvider>
+  );
 }

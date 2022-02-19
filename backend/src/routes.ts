@@ -29,9 +29,7 @@ export function configureGammaAuthRoutes(
     redirectPath,
     passport.authenticate("gamma"),
     (req: Request, res: Response) => {
-      const user = createUser(req);
-      delete user.accessToken;
-
+      console.log(req.user);
       redirectToClient(res, clientHost);
     }
   );
@@ -39,16 +37,13 @@ export function configureGammaAuthRoutes(
     req.logOut();
     redirectToClient(res, clientHost);
   });
-}
-
-function createUser(req: Request): User {
-  return {
-    cid: "",
-    is_admin: false,
-    groups: [],
-    language: "en",
-    ...req.user,
-  };
+  app.get(
+    "/api/user",
+    passport.authorize("gamma", { session: false }),
+    (req: Request, res: Response) => {
+      res.json(req.user);
+    }
+  );
 }
 
 function redirectToClient(res: Response, clientHost: string) {

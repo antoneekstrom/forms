@@ -1,9 +1,5 @@
-import {
-  gql,
-  useMutation,
-  useQuery,
-} from "@apollo/client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { gql, useMutation, useQuery } from "urql";
 
 const GET_FORMS = gql`
   query {
@@ -44,13 +40,13 @@ function LogoutButton() {
 }
 
 function Forms() {
-  const { loading, error, data } = useQuery(GET_FORMS);
+  const [{ data, fetching, error }] = useQuery({ query: GET_FORMS });
   if (error) {
     console.log(error);
     return <h1>{error.message}</h1>;
   }
 
-  if (loading) {
+  if (fetching) {
     return <h1>loading..</h1>;
   }
 
@@ -59,25 +55,7 @@ function Forms() {
 
 function AddFormButton() {
   const [formTitle, setFormTitle] = useState("");
-  const [addForm] = useMutation(ADD_FORM, {
-    update(cache, { data: { addForm } }) {
-      cache.modify({
-        fields: {
-          forms(existingForms = []) {
-            const newFormRef = cache.writeFragment({
-              data: addForm,
-              fragment: gql`
-                fragment NewForm on Form {
-                  title
-                }
-              `,
-            });
-            return [...existingForms, newFormRef];
-          },
-        },
-      });
-    },
-  });
+  const [, addForm] = useMutation(ADD_FORM);
 
   return (
     <div>
@@ -93,11 +71,24 @@ function AddFormButton() {
   );
 }
 
+function UserStatus() {
+  const [user, setUser] = useState(null);
+
+  if (!user) {
+    return <p>not logged in</p>;
+  } else {
+    console.log(user);
+    return <p>logged in as {user.cid}</p>;
+  }
+}
+
 export default function Test() {
   return (
     <div>
       <LoginButton />
       <LogoutButton />
+      <AddFormButton />
+      <UserStatus />
       <Forms />
     </div>
   );
