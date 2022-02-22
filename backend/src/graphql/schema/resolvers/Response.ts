@@ -8,6 +8,7 @@ import {
   Arg,
   FieldResolver,
   Root,
+  Authorized,
 } from "type-graphql";
 import { Service } from "typedi";
 import { PrismaService } from "../../../services/prisma";
@@ -49,6 +50,7 @@ export class ResponseResolver {
     });
   }
 
+  @Authorized()
   @FieldResolver((returns) => ResponderType)
   async responder(@Root() { responderId: id }: ResponseType) {
     return await this.prisma.client.responder.findFirst({
@@ -58,6 +60,7 @@ export class ResponseResolver {
     });
   }
 
+  @Authorized()
   @FieldResolver((returns) => [AnswerType])
   async answers(@Root() response: ResponseType) {
     return await this.prisma.client.answer.findMany({

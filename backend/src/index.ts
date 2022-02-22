@@ -18,6 +18,11 @@ async function run() {
   configureGammaAuth(app, env);
   configureGraphQLRoute(app, await schema(), env.graphqlPath);
 
+  app.get("/api/user", (req, res) => {
+    console.log(req.session);
+    res.json(req.session.user);
+  });
+
   start(app);
 }
 

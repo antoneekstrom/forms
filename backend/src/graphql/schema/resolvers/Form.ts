@@ -43,6 +43,7 @@ export class AddFormInput implements Partial<FormType> {
 export class FormResolver {
   constructor(private readonly prisma: PrismaService) {}
 
+  @Authorized()
   @Mutation((returns) => FormType)
   async addForm(@Arg("data") data: AddFormInput) {
     return await this.prisma.client.form.create({
@@ -50,7 +51,6 @@ export class FormResolver {
     });
   }
 
-  @Authorized()
   @Query((returns) => [FormType])
   async forms() {
     return await this.prisma.client.form.findMany();

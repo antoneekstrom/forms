@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import useSWR from "swr";
 import { gql, useMutation, useQuery } from "urql";
 
 const GET_FORMS = gql`
@@ -40,7 +41,16 @@ function LogoutButton() {
 }
 
 function Forms() {
-  const [{ data, fetching, error }] = useQuery({ query: GET_FORMS });
+  const [{ data, fetching, error }, refetch] = useQuery({ query: GET_FORMS });
+
+  // refetch forms on interval
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     refetch({ requestPolicy: "network-only" });
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, [refetch]);
+
   if (error) {
     console.log(error);
     return <h1>{error.message}</h1>;
@@ -72,12 +82,22 @@ function AddFormButton() {
 }
 
 function UserStatus() {
-  const [user, setUser] = useState(null);
+  const { data: user, error } = useSWR(
+    "http://localhost:3000/api/user",
+    (url) =>
+      fetch(url, {
+        credentials: "include",
+      }).then((res) => res.json())
+  );
+
+  if (error) {
+    console.error(error);
+    return <p>{error.message}</p>;
+  }
 
   if (!user) {
     return <p>not logged in</p>;
   } else {
-    console.log(user);
     return <p>logged in as {user.cid}</p>;
   }
 }
