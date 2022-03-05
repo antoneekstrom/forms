@@ -56,11 +56,24 @@ function Forms() {
     return <h1>{error.message}</h1>;
   }
 
-  if (fetching) {
+  if (fetching) { 
     return <h1>loading..</h1>;
   }
-
-  return <pre>{JSON.stringify(data, null, 2)}</pre>;
+  
+  return (
+    <div className="mt-6">
+      <h1 className="text-2xl font-bold">Forms</h1>
+      <ol className="list-none flex flex-col gap-6 mt-2">
+        {data.forms.map((form) => (
+          <li key={form.title}>
+            <div className="p-6 rounded-md shadow-md bg-white max-w-screen-md">
+              <h1>{form.title}</h1>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
 }
 
 function AddFormButton() {
@@ -84,10 +97,17 @@ function AddFormButton() {
 function UserStatus() {
   const { data: user, error } = useSWR(
     "http://localhost:3000/api/user",
-    (url) =>
-      fetch(url, {
+    async (url) => {
+      const result = await fetch(url, {
         credentials: "include",
-      }).then((res) => res.json())
+      });
+
+      try {
+        return await result.json();
+      } catch (e) {
+        return;
+      }
+    }
   );
 
   if (error) {
@@ -104,11 +124,15 @@ function UserStatus() {
 
 export default function Test() {
   return (
-    <div>
-      <LoginButton />
-      <LogoutButton />
-      <AddFormButton />
-      <UserStatus />
+    <div className="p-8">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2">
+          <LoginButton />
+          <LogoutButton />
+        </div>
+        <AddFormButton />
+        <UserStatus />
+      </div>
       <Forms />
     </div>
   );

@@ -1,0 +1,10 @@
+schema: './src/schema.graphql'
+documents: './client/src/graphql/**/*.graphql'
+extensions:
+  graphback:
+    model: './model/*.graphql'
+    plugins:
+      graphback-schema:
+        outputPath: './src/schema/schema.graphql'
+      graphback-client:
+        outputFile: './client/src/graphql/graphback.graphql'
