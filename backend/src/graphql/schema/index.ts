@@ -1,6 +1,6 @@
-import { buildSchema, NonEmptyArray } from "type-graphql";
+import { SessionData } from "express-session";
+import { buildSchema, NonEmptyArray, ResolverData } from "type-graphql";
 import Container from "typedi";
-import { User } from "../../auth/types";
 import { AnswerResolver } from "./resolvers/Answer";
 import { FormResolver } from "./resolvers/Form";
 import { QuestionResolver } from "./resolvers/Question";
@@ -26,9 +26,13 @@ export async function schema() {
   return await buildSchema({
     resolvers,
     container: Container,
-    authChecker: (options, roles) => {
-      const user = options.context.user as User | undefined;
-      return user != undefined;
-    },
+    authChecker: authorize,
   });
+}
+
+function authorize(
+  options: ResolverData<{ session: SessionData }>,
+  roles: string[]
+) {
+  return options.context.session.user !== undefined;
 }

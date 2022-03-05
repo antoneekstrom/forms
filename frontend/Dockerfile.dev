@@ -7,6 +7,6 @@ WORKDIR /app
 COPY package.json .
 RUN yarn install
 
-COPY tsconfig.json next.config.js next-env.d.ts ./
+COPY tsconfig.json next.config.js next-env.d.ts tailwind.config.js tailwind.css postcss.config.js ./
 
 CMD yarn dev

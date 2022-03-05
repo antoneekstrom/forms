@@ -6,6 +6,7 @@ import {
   Resolver,
   Mutation,
   Arg,
+  Authorized,
 } from "type-graphql";
 import { Service } from "typedi";
 import { PrismaService } from "../../../services/prisma";
@@ -45,6 +46,7 @@ export class AddQuestionInput implements Partial<QuestionType> {
 export class QuestionResolver {
   constructor(private readonly prisma: PrismaService) {}
 
+  @Authorized()
   @Mutation((returns) => FormType)
   async addQuestion(@Arg("data") { formId: id, ...create }: AddQuestionInput) {
     return await this.prisma.client.form.update({

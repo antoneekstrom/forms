@@ -1,9 +1,6 @@
-import {
-  gql,
-  useMutation,
-  useQuery,
-} from "@apollo/client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import useSWR from "swr";
+import { gql, useMutation, useQuery } from "urql";
 
 const GET_FORMS = gql`
   query {
@@ -44,40 +41,44 @@ function LogoutButton() {
 }
 
 function Forms() {
-  const { loading, error, data } = useQuery(GET_FORMS);
+  const [{ data, fetching, error }, refetch] = useQuery({ query: GET_FORMS });
+
+  // refetch forms on interval
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     refetch({ requestPolicy: "network-only" });
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, [refetch]);
+
   if (error) {
     console.log(error);
     return <h1>{error.message}</h1>;
   }
 
-  if (loading) {
+  if (fetching) { 
     return <h1>loading..</h1>;
   }
-
-  return <pre>{JSON.stringify(data, null, 2)}</pre>;
+  
+  return (
+    <div className="mt-6">
+      <h1 className="text-2xl font-bold">Forms</h1>
+      <ol className="list-none flex flex-col gap-6 mt-2">
+        {data.forms.map((form) => (
+          <li key={form.title}>
+            <div className="p-6 rounded-md shadow-md bg-white max-w-screen-md">
+              <h1>{form.title}</h1>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
 }
 
 function AddFormButton() {
   const [formTitle, setFormTitle] = useState("");
-  const [addForm] = useMutation(ADD_FORM, {
-    update(cache, { data: { addForm } }) {
-      cache.modify({
-        fields: {
-          forms(existingForms = []) {
-            const newFormRef = cache.writeFragment({
-              data: addForm,
-              fragment: gql`
-                fragment NewForm on Form {
-                  title
-                }
-              `,
-            });
-            return [...existingForms, newFormRef];
-          },
-        },
-      });
-    },
-  });
+  const [, addForm] = useMutation(ADD_FORM);
 
   return (
     <div>
@@ -93,11 +94,45 @@ function AddFormButton() {
   );
 }
 
+function UserStatus() {
+  const { data: user, error } = useSWR(
+    "http://localhost:3000/api/user",
+    async (url) => {
+      const result = await fetch(url, {
+        credentials: "include",
+      });
+
+      try {
+        return await result.json();
+      } catch (e) {
+        return;
+      }
+    }
+  );
+
+  if (error) {
+    console.error(error);
+    return <p>{error.message}</p>;
+  }
+
+  if (!user) {
+    return <p>not logged in</p>;
+  } else {
+    return <p>logged in as {user.cid}</p>;
+  }
+}
+
 export default function Test() {
   return (
-    <div>
-      <LoginButton />
-      <LogoutButton />
+    <div className="p-8">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2">
+          <LoginButton />
+          <LogoutButton />
+        </div>
+        <AddFormButton />
+        <UserStatus />
+      </div>
       <Forms />
     </div>
   );

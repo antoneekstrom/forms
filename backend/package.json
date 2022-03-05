@@ -26,6 +26,7 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
+    "@ekstrom/gamma-auth": "^1.0.11",
     "@prisma/client": "^3.9.2",
     "axios": "^0.26.0",
     "class-validator": "^0.13.2",
@@ -36,7 +37,6 @@
     "graphql": "15",
     "memorystore": "^1.6.7",
     "passport": "^0.5.2",
-    "passport-oauth2": "^1.6.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
     "typedi": "^0.10.0"
