@@ -21,6 +21,7 @@ import { ResponseType } from "./Response";
  */
 @ObjectType()
 export class FormType implements Form {
+  @Field()
   id!: number;
   @Field()
   title!: string;
@@ -33,6 +34,12 @@ export class FormType implements Form {
 export class AddFormInput implements Partial<FormType> {
   @Field()
   title!: string;
+}
+
+@InputType()
+export class RemoveFormInput implements Partial<FormType> {
+  @Field()
+  id!: number;
 }
 
 /**
@@ -48,6 +55,16 @@ export class FormResolver {
   async addForm(@Arg("data") data: AddFormInput) {
     return await this.prisma.client.form.create({
       data,
+    });
+  }
+
+  @Authorized()
+  @Mutation((returns) => FormType)
+  async removeForm(@Arg("data") { id }: RemoveFormInput) {
+    return await this.prisma.client.form.delete({
+      where: {
+        id,
+      },
     });
   }
 
