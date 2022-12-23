@@ -6,6 +6,7 @@ const GET_FORMS = gql`
   query {
     forms {
       title
+      id
     }
   }
 `;
@@ -14,6 +15,14 @@ const ADD_FORM = gql`
   mutation AddForm($title: String!) {
     addForm(data: { title: $title }) {
       title
+    }
+  }
+`;
+
+const REMOVE_FORM = gql`
+  mutation RemoveForm($id: String!) {
+    removeForm(id: $id) {
+      id
     }
   }
 `;
@@ -41,7 +50,7 @@ function LogoutButton() {
 }
 
 function Forms() {
-  const [{ data, fetching, error }, refetch] = useQuery({ query: GET_FORMS });
+  const [{ data, fetching, error }, refetch] = useQuery<{ forms: { title: string, id: string }[] }>({ query: GET_FORMS });
 
   // refetch forms on interval
   // useEffect(() => {
@@ -59,15 +68,16 @@ function Forms() {
   if (fetching) { 
     return <h1>loading..</h1>;
   }
-  
+
   return (
     <div className="mt-6">
       <h1 className="text-2xl font-bold">Forms</h1>
       <ol className="list-none flex flex-col gap-6 mt-2">
-        {data.forms.map((form) => (
-          <li key={form.title}>
+        {data.forms.map(({title, id}) => (
+          <li key={id}>
             <div className="p-6 rounded-md shadow-md bg-white max-w-screen-md">
-              <h1>{form.title}</h1>
+              <h1>{title}</h1>
+              <RemoveFormButton id={id} />
             </div>
           </li>
         ))}
@@ -87,11 +97,19 @@ function AddFormButton() {
         onChange={(e) => setFormTitle(e.target.value)}
         value={formTitle}
       />
-      <button onClick={() => addForm({ variables: { title: formTitle } })}>
+      <button onClick={() => addForm({ title: formTitle })}>
         add form
       </button>
     </div>
   );
+}
+
+function RemoveFormButton({ id }: { id: string }) {
+  const [, removeForm] = useMutation(REMOVE_FORM);
+
+  return (
+    <button onClick={() => removeForm({ id })}>remove</button>
+  )
 }
 
 function UserStatus() {
